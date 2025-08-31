@@ -2,12 +2,139 @@
 
 A modern e-commerce platform built with Django, featuring a robust shopping cart system, payment integration, and product management.
 
-## Features
+## 🌟 Features
 
-- 🛍️ Product catalog with categories
-- 🛒 Shopping cart functionality
-- 💳 Secure payment integration
-- 🏷️ Promo code system
+- **Product Management**
+  - 🛍️ Product catalog with categories
+  - � Advanced search functionality
+  - 📱 Product variants support
+  - 📸 Multiple product images
+
+- **Shopping Experience**
+  - �🛒 Dynamic shopping cart
+  - 🏷️ Promo code system
+  - 💳 Multiple payment options (Stripe & PayPal)
+  - 📦 Order tracking system
+
+- **User Management**
+  - 👤 User registration and authentication
+  - 📝 Profile management
+  - 🏠 Address management
+  - 📊 Order history
+
+- **Admin Features**
+  - 📊 Order management dashboard
+  - 🚚 Shipment tracking
+  - 💰 Payment status monitoring
+  - 📦 Product inventory management
+
+## 🚀 Technology Stack
+
+- **Backend**: Django 5.2.1
+- **Database**: SQLite3
+- **Payment Integration**: 
+  - Stripe
+  - PayPal
+- **Additional Features**:
+  - Azure Storage for media files
+  - Phone number verification
+  - Gunicorn for production deployment
+
+## 📋 Prerequisites
+
+- Python 3.12 or higher
+- pip package manager
+
+## 🛠️ Installation
+
+1. Clone the repository
+```bash
+git clone https://github.com/SacSresta/project_ecom.git
+cd project_ecom
+```
+
+2. Create a virtual environment
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+3. Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+4. Set up the database
+```bash
+python manage.py migrate
+```
+
+5. Create a superuser
+```bash
+python manage.py createsuperuser
+```
+
+6. Run the development server
+```bash
+python manage.py runserver
+```
+
+## �️ Project Structure
+
+```
+project_ecom/
+├── cart/               # Shopping cart functionality
+├── ecom/               # Main project settings
+├── payment/            # Payment processing
+├── store/              # Product management
+├── manage.py
+└── requirements.txt
+```
+
+## 🔒 Environment Variables
+
+Create a `.env` file in the root directory and add the following:
+
+```env
+SECRET_KEY=your_secret_key
+DEBUG=True
+STRIPE_PUBLIC_KEY=your_stripe_public_key
+STRIPE_SECRET_KEY=your_stripe_secret_key
+PAYPAL_CLIENT_ID=your_paypal_client_id
+AZURE_STORAGE_CONNECTION_STRING=your_azure_storage_connection
+```
+
+## 🌐 API Endpoints
+
+### Store
+- `/` - Home page
+- `/product/<id>/` - Product detail
+- `/category/<name>/` - Category products
+- `/search/` - Product search
+
+### Cart
+- `/cart/` - Cart summary
+- `/cart/add/` - Add to cart
+- `/cart/update/` - Update cart
+- `/cart/delete/` - Remove from cart
+
+### Payment
+- `/payment/checkout/` - Checkout process
+- `/payment/stripe_checkout/` - Stripe payment
+- `/payment/payment_success/` - Success page
+- `/payment/orders/<id>` - Order details
+
+## 👥 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📝 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🤝 Support
+
+For support, email support@basanaboutique.com or create an issue in the repository.
 - 👤 User authentication
 - 📱 Responsive design
 - 🖼️ Media file handling
