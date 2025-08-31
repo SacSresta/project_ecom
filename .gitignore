@@ -90,6 +90,7 @@ docs/_build/
 .pybuilder/
 target/
 
+.git-rewrite/
 # Jupyter Notebook
 .ipynb_checkpoints
 
