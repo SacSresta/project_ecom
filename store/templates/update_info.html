@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update User Info</title>
+    <style>
+        :root {
+            --primary-color: #FF69B4;
+            --secondary-color: #FFB6C1;
+            --text-color: #333;
+            --bg-color: #f8f9fa;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        
+        .update-header {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            padding: 4rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .update-title {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .update-subtitle {
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .update-form-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-section {
+            margin-bottom: 2rem;
+        }
+        
+        .form-section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-control {
+            border: 2px solid var(--secondary-color);
+            border-radius: 25px;
+            padding: 0.75rem 1.25rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(255, 105, 180, 0.25);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-update {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-update:hover {
+            background-color: #FF1493;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-skip {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+        
+        .btn-skip:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="update-header">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center">
+                <h1 class="update-title">Update Your Profile Information</h1>
+                <p class="update-subtitle">Keep your information up to date</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Update Form -->
+    <div class="container">
+        <div class="update-form-container">
+            <form method="POST" action="{% url 'update_info' %}" id="updateForm">
+                {% csrf_token %}
+                <div class="form-section">
+                    <h2 class="form-section-title">Billing Information</h2>
+                    {{ form.as_p }}
+                </div>
+                <div class="form-section">
+                    <h2 class="form-section-title">Shipping Address and Information</h2>
+                    {{ shipping_form.as_p }}
+                </div>
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-update">Update Profile</button>
+                    <a href="{% url 'home' %}" class="btn btn-skip">Skip</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('updateForm');
+            const inputs = form.querySelectorAll('input, select, textarea');
+
+            inputs.forEach(input => {
+                input.classList.add('form-control');
+                
+                input.addEventListener('focus', function() {
+                    this.style.transform = 'scale(1.02)';
+                });
+
+                input.addEventListener('blur', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

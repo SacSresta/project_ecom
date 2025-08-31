@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <style>
+    :root {
+      --primary-color: #FF69B4;
+      --secondary-color: #FFB6C1;
+      --text-color: #333;
+      --bg-color: #f8f9fa;
+    }
+    
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Arial', sans-serif;
+    }
+    
+    .update-header {
+      background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+      padding: 4rem 0;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .update-title {
+      color: white;
+      font-size: 2.5rem;
+      font-weight: 700;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .update-form-container {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-control {
+      border: 2px solid var(--secondary-color);
+      border-radius: 25px;
+      padding: 0.75rem 1.25rem;
+      transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+      box-shadow: 0 0 0 0.2rem rgba(255, 105, 180, 0.25);
+      border-color: var(--primary-color);
+    }
+    
+    .btn-update {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      padding: 0.75rem 1.5rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-update:hover {
+      background-color: #FF1493;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+
+  <!-- Header -->
+  <header class="update-header">
+    <div class="container px-4 px-lg-5 my-5">
+      <div class="text-center text-white">
+        <h1 class="update-title">Update Profile</h1>
+      </div>
+    </div>
+  </header>
+
+  <!-- Update Form -->
+  <div class="container">
+    <div class="update-form-container">
+      <form method="POST" action="{% url 'update_user' %}">
+        {% csrf_token %}
+        {{ user_form.as_p }}
+        <button type="submit" class="btn btn-update">Update Profile</button>
+      </form>
+      <br />
+      <a href="{% url 'update_password' %}" class="btn btn-update">Update password</a>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.querySelector('form');
+      const inputs = form.querySelectorAll('input, select, textarea');
+
+      inputs.forEach(input => {
+        input.classList.add('form-control');
+        
+        input.addEventListener('focus', function() {
+          this.style.transform = 'scale(1.02)';
+        });
+
+        input.addEventListener('blur', function() {
+          this.style.transform = 'scale(1)';
+        });
+      });
+    });
+  </script>
+{% endblock %}

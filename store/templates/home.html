@@ -1,0 +1,334 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basana Boutique - Modern Fashion</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FFF5F7;
+        }
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+        }
+        .hero-content {
+            text-align: center;
+            color: #FFF;
+            z-index: 1;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #FF69B4;
+            color: #FFF;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #FF1493;
+            transform: translateY(-3px);
+        }
+        .section {
+            padding: 6rem 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #FF69B4;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        .product-card {
+            background-color: #FFF;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(255, 105, 180, 0.2);
+        }
+        .product-image {
+            height: 300px;
+            overflow: hidden;
+        }
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
+        }
+        .product-info {
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .product-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .product-price {
+            color: #FF69B4;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .sale-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: #FF69B4;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-weight: bold;
+            z-index: 1;
+            font-size: 0.9rem;
+        }
+        .category-slider {
+            margin-top: 2rem;
+        }
+        .category-item {
+            position: relative;
+            height: 250px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 0 10px;
+        }
+        .category-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .category-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 105, 180, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .category-item:hover .category-overlay {
+            opacity: 1;
+        }
+        .category-name {
+            color: #FFF;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+        }
+        #welcomeModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            background-color: #FFF;
+            margin: 10% auto;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 500px;
+            text-align: center;
+        }
+        .close-modal {
+            color: #FF69B4;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .modal-title {
+            color: #FF69B4;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        .sale-banner {
+            background-color: #FF69B4;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <section class="hero" style="background-image: url('media/upload/product/home.JPG');">
+        <div class="hero-content" data-aos="fade-up">
+            <h1>Basana Boutique</h1>
+            <p>Where tradition meets style</p>
+            <a href="#sale-section" class="btn">Shop Now</a>
+        </div>
+    </section>
+
+    <section id="sale-section" class="section">
+        <div class="container">
+            <h2 data-aos="fade-up">On Sale Now</h2>
+            <div class="product-grid">
+                {% for product in sale_products %}
+                <div class="product-card" data-aos="fade-up">
+                    <div class="sale-badge">Sale</div>
+                    <div class="product-image">
+                        {% if product.image %}
+                        <a href="{% url 'product' product.id %}">
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        </a>
+                        {% else %}
+                        <img src="https://via.placeholder.com/300x300.png?text=No+Image" alt="No Image Available">
+                        {% endif %}
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">{{ product.name }}</h3>
+                        <p class="product-price">
+                            <strike style="color: #888; font-size: 1rem;">${{ product.price }}</strike>
+                            <span style="color: #FF69B4; font-size: 1.5rem; font-weight: bold; margin-left: 0.8rem;">${{ product.sale_price }}</span>
+                        </p>
+                        <p>{{ product.short_description }}</p>
+                        <a href="{% url 'product' product.id %}" class="btn">View Product</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+          <h2 data-aos="fade-up">Shop by Category</h2>
+          <div class="category-slider">
+              {% for category in categories %}
+              <a href="{% url 'category' category.name%}" class="category-item"> <!-- Make category-item clickable -->
+                  {% if category.image %}
+                  <img src="{{ category.image.url }}" alt="{{ category.name }}">
+                  {% else %}
+                  <img src="https://via.placeholder.com/400x300.png?text=No+Image" alt="No Image Available">
+                  {% endif %}
+                  <div class="category-overlay">
+                      <h3 class="category-name">{{ category.name }}</h3>
+                  </div>
+              </a> <!-- Close anchor tag here -->
+              {% endfor %}
+          </div>
+      </div>
+  </section>
+  
+
+    <div id="welcomeModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 class="modal-title">Welcome to Basana Boutique!</h2>
+            <p>Thank you for visiting us for the first time. We hope you enjoy your shopping experience!</p>
+            <div class="sale-banner">
+                Don't Miss Our Launch Sale on 28/09/24!
+            </div>
+            <p>Get ready for incredible discounts on our latest collections. Mark your calendar and be the first to grab our exclusive offers!</p>
+            <a href="{% url 'all_product' %}" class="btn">Explore Our Collections</a>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+
+        $(document).ready(function(){
+            $('.category-slider').slick({
+                slidesToShow: 3,
+                slidesToScroll: 1,
+                autoplay: true,
+                autoplaySpeed: 3000,
+                dots: true,
+                responsive: [
+                    {
+                        breakpoint: 768,
+                        settings: {
+                            slidesToShow: 2
+                        }
+                    },
+                    {
+                        breakpoint: 480,
+                        settings: {
+                            slidesToShow: 1
+                        }
+                    }
+                ]
+            });
+
+            // Show welcome modal based on Django variable
+            var showWelcome = "{{ show_welcome|lower }}";
+            if (showWelcome === "true") {
+                $('#welcomeModal').fadeIn();
+            }
+
+            // Close modal when clicking the close button or outside the modal
+            $('.close-modal, #welcomeModal').click(function(event){
+                if (event.target == this) {
+                    $('#welcomeModal').fadeOut();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

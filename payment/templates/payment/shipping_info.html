@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <!-- Header -->
+  <header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+      <div class="text-center text-white">
+        <h1 class="display-4 fw-bolder">Shipping Info</h1>
+        <p class="lead fw-normal text-white-50 mb-0">Review your order and proceed</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container my-5">
+    <div class="row">
+      <!-- Order Summary -->
+      <div class="col-md-6 offset-md-3">
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-white">Order Summary</div>
+          <div class="card-body">
+            {% for variant in variants %}
+              <div class="d-flex justify-content-between mb-3">
+                <div>
+                  <strong>{{ variant.product.name }}</strong>
+                  {% if variant.product.is_sale %}
+                    <span class="text-danger">${{ variant.product.sale_price }}</span>
+                  {% else %}
+                    <span>${{ variant.product.price }}</span>
+                  {% endif %}
+                </div>
+                <div>
+                  <small>
+                    Quantity:{% for key, value in quantities.items %}
+                      {% if key == variant.id|slugify %}
+                        {% for size, qty in value.items %}
+                          {{ size }} <br />
+                          Size: {{ qty }}
+                          {% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                    {% endfor %}
+                  </small>
+                </div>
+              </div>
+              <hr />
+            {% endfor %}
+            <div class="d-flex justify-content-between">
+              <strong>Total:</strong>
+              <strong>${{ totals }}</strong>
+            </div>
+            <a href="{% url 'cart_summary' %}" class="btn btn-sm btn-outline-secondary mt-3">Update Items</a>
+          </div>
+        </div>
+
+        <!-- Shipping Info -->
+        <div class="card">
+          <div class="card-header bg-primary text-white">Shipping Info</div>
+          <div class="card-body">
+            <form method="POST" action="{% url 'billing_info' %}">
+              {% csrf_token %}
+              {{ shipping_form.as_p }}
+              <button type="submit" class="btn btn-secondary mt-3">Continue to Billing</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

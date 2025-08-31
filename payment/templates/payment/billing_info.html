@@ -1,0 +1,303 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+
+
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Information</title>
+    <style>
+        :root {
+            --primary-color: pink;
+            --secondary-color: #f5f7fa;
+            --text-color: #333;
+            --border-color: #e0e0e0;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --stripe-color: #635bff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), #2c3e50);
+            color: #fff;
+            text-align: center;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 1rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            background-color: pink;
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--text-color);
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid var(--border-color);
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .shipping-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .payment-methods {
+            text-align: center;
+        }
+
+        .payment-option {
+            margin-bottom: 1.5rem;
+        }
+
+        .payment-option img {
+            height: 40px;
+            margin-bottom: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .row {
+                display: flex;
+                flex-wrap: wrap;
+                margin: 0 -15px;
+            }
+            .col-md-8 {
+                flex: 0 0 66.666667%;
+                max-width: 66.666667%;
+                padding: 0 15px;
+            }
+            .col-md-4 {
+                flex: 0 0 33.333333%;
+                max-width: 33.333333%;
+                padding: 0 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>Billing Information</h1>
+            <p>Complete Your Payment</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">Order Summary</div>
+                    <div class="card-body">
+                        {% for variant in variants %}
+                            <div class="order-item">
+                                <div>
+                                    <strong>{{ variant.product.name }}</strong><br>
+                                    {% if variant.product.is_sale %}
+                                        <span style="color: var(--danger-color);">${{ variant.product.sale_price }}</span>
+                                    {% else %}
+                                        <span style="color: var(--success-color);">${{ variant.product.price }}</span>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <small style="color: #6c757d;">
+                                        <strong>Quantity:</strong> 
+                                        {% for key, value in quantities.items %}
+                                            {% if key == variant.id|stringformat:'s' %}
+                                                {% for qty, size in value.items %}
+                                                    {{ qty }} (Size: {{ size }})<br>
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </small>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="order-total">
+                            <span>Subtotal:</span>
+                            <span>${{ subtotal|floatformat:2 }}</span>
+                        </div>
+                        <div class="order-total">
+                            <span>Shipping:</span>
+                            <span>${{ shipping_fee }}</span>
+                        </div>
+                        <div class="order-total" style="font-size: 1.5rem; color: var(--primary-color);">
+                            <span>Total:</span>
+                            <span>${{ total_with_shipping|floatformat:2 }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">Shipping Information</div>
+                    <div class="card-body">
+                        <div class="shipping-info">
+                            <p><strong>Name:</strong> {{ shipping_info.shipping_full_name }}</p>
+                            <p><strong>Email:</strong> {{ shipping_info.shipping_email }}</p>
+                            <p><strong>Address 1:</strong> {{ shipping_info.shipping_address1 }}</p>
+                            <p><strong>Address 2:</strong> {{ shipping_info.shipping_address2 }}</p>
+                            <p><strong>City:</strong> {{ shipping_info.shipping_city }}</p>
+                            <p><strong>State:</strong> {{ shipping_info.shipping_state }}</p>
+                            <p><strong>Zipcode:</strong> {{ shipping_info.shipping_zipcode }}</p>
+                            <p><strong>Country:</strong> {{ shipping_info.shipping_country }}</p>
+                            <p><strong>Phone:</strong> {{ shipping_info.shipping_phone }}</p>
+                        </div>
+                        <div style="text-align: center; margin-top: 1.5rem;">
+                            <a href="{% url 'checkout' %}" class="btn">Update Shipping</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">Payment Methods</div>
+                    <div class="card-body">
+                        <div class="payment-methods">
+                            <div class="payment-option">
+                                {{ paypal_form.render }}
+                            </div>
+                          <div class="payment-option">
+                                <h3 style="color: var(--text-color); font-size: 1.25rem; margin-bottom: 1rem;">Or Pay with Stripe</h3>
+                                <form action="{% url 'stripe_payment' %}" method="POST" id="stripe-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="payment_method" value="stripe">
+                                    <input type="hidden" name="total_amount" id="total-amount" value="{{ total_with_shipping }}">
+                                    <!-- Add hidden fields for shipping information -->
+                                    <input type="hidden" name="shipping_full_name" value="{{ shipping_info.shipping_full_name }}">
+                                    <input type="hidden" name="shipping_email" value="{{ shipping_info.shipping_email }}">
+                                    <input type="hidden" name="shipping_address1" value="{{ shipping_info.shipping_address1 }}">
+                                    <input type="hidden" name="shipping_address2" value="{{ shipping_info.shipping_address2 }}">
+                                    <input type="hidden" name="shipping_city" value="{{ shipping_info.shipping_city }}">
+                                    <input type="hidden" name="shipping_state" value="{{ shipping_info.shipping_state }}">
+                                    <input type="hidden" name="shipping_zipcode" value="{{ shipping_info.shipping_zipcode }}">
+                                    <input type="hidden" name="shipping_country" value="{{ shipping_info.shipping_country }}">
+                                    <input type="hidden" name="shipping_phone" value="{{ shipping_info.shipping_phone }}">
+                                    <button type="submit" id="checkout-button" class="btn btn-block" style="background-color: var(--stripe-color); display: flex; align-items: center; justify-content:left;">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" alt="Stripe" style="height: 24px; margin-right: 0.5rem;">
+                                        Pay with Card
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}

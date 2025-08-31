@@ -1,0 +1,333 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  :root {
+    --primary-color: pink;
+    --secondary-color: #f5f7fa;
+    --text-color: #333;
+    --border-color: #e0e0e0;
+  }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-color);
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .checkout-header {
+    background: linear-gradient(135deg, var(--primary-color), #2c3e50);
+    padding: 2rem 1rem;
+    color: white;
+    text-align: center;
+  }
+  
+  .checkout-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  }
+  
+  .checkout-subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+  }
+  
+  .checkout-container {
+    max-width: 100%;
+    margin: 1rem auto;
+    padding: 0 1rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .card {
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .card:hover {
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  }
+  
+  .card-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem;
+    font-weight: 600;
+    font-size: 1.2rem;
+  }
+  
+  .card-body {
+    padding: 1rem;
+  }
+  
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  
+  .btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: pink;
+  }
+  
+  .btn-secondary {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+  }
+  
+  .btn-secondary:hover {
+    background-color: #e6e9ed;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  
+  .form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+  }
+  
+  .form-check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .form-check-input {
+    margin-right: 0.75rem;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  
+  .pickup-info {
+    background-color: var(--secondary-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .order-summary {
+    background-color: var(--secondary-color);
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+  }
+  
+  .order-summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  
+  .order-total {
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px solid var(--border-color);
+  }
+
+  @media (min-width: 600px) {
+    .checkout-container {
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+    }
+  }
+</style>
+
+<header class="checkout-header">
+  <h1 class="checkout-title">Secure Checkout</h1>
+  <p class="checkout-subtitle">Complete your purchase with confidence</p>
+</header>
+
+<div class="checkout-container">
+  <div class="main-content">
+    <div class="card">
+      <div class="card-header">Shipping Options</div>
+      <div class="card-body">
+        <form method="GET" action="{% url 'checkout' %}" id="shippingForm">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="shipping_method" id="pickup" value="pickup" {% if shipping_method == 'pickup' %}checked{% endif %}>
+            <label class="form-check-label" for="pickup">
+              Pickup (Free)
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="shipping_method" id="standard" value="standard" {% if shipping_method == 'standard' %}checked{% endif %}>
+            <label class="form-check-label" for="standard">
+              Standard Delivery (${{ standard_shipping }})
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="shipping_method" id="express" value="express" {% if shipping_method == 'express' %}checked{% endif %}>
+            <label class="form-check-label" for="express">
+              Express Delivery (${{ express_shipping }})
+            </label>
+          </div>
+          <button type="submit" class="btn btn-primary mt-3">Update Shipping Method</button>
+        </form>
+      </div>
+    </div>
+
+    {% if shipping_method == 'pickup' %}
+    <div class="card mt-4">
+      <div class="card-header">Pickup Information</div>
+      <div class="card-body">
+        <div class="pickup-info">
+          <h4>Pickup Location:</h4>
+          <p>51 Dartbrook Road, Auburn, NSW, 2144</p>
+          <p>You will be mailed once the order is ready for pickup!!!</p>
+        </div>
+        <form method="POST" action="{% url 'billing_info' %}" id="pickupForm">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="shipping_full_name" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="shipping_email" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Phone Number:</label>
+            <input type="number" id="phone" name="shipping_phone" required>
+          </div>
+          <input type="hidden" name="shipping_method" value="pickup">
+          <input type="hidden" name="total_with_shipping" value="{{ total_with_shipping }}">
+          <input type="hidden" name="shipping_fee" value="0">
+          <button type="submit" class="btn btn-primary">Continue to Billing</button>
+        </form>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if shipping_method != 'pickup' and shipping_form %}
+    <div class="card mt-4">
+      <div class="card-header">Shipping Information</div>
+      <div class="card-body">
+        <form method="POST" action="{% url 'billing_info' %}" id="shippingInfoForm">
+          {% csrf_token %}
+          {{ shipping_form.as_p }}
+          <input type="hidden" name="total_with_shipping" value="{{ total_with_shipping }}">
+          <input type="hidden" name="shipping_fee" value="{% if shipping_method == 'standard' %}{{ standard_shipping }}{% elif shipping_method == 'express' %}{{ express_shipping }}{% else %}0{% endif %}">
+          <button type="submit" class="btn btn-primary">Continue to Billing</button>
+        </form>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="sidebar">
+    <div class="card">
+      <div class="card-header">Order Summary</div>
+      <div class="card-body">
+        <div class="order-summary">
+          {% for variant in variants %}
+            <div class="order-summary-item">
+              <span>{{ variant.product}}</span>
+              <span>${{ variant.price }}</span>
+            </div>
+          {% endfor %}
+          <div class="order-summary-item">
+            <strong>Subtotal:</strong>
+            <strong>${{ totals|floatformat:2 }}</strong>
+          </div>
+          <div class="order-summary-item">
+            <strong>Discount:</strong>
+            <strong>${{ discount|floatformat:2 }}</strong>
+          </div>
+
+          <div class="order-summary-item">
+            <strong>Shipping:</strong>
+            <strong>
+              {% if shipping_method == 'standard' %}
+                ${{ standard_shipping }}
+              {% elif shipping_method == 'express' %}
+                ${{ express_shipping }}
+              {% else %}
+                $0
+              {% endif %}
+            </strong>
+          </div>
+          <div class="order-summary-item order-total">
+            <strong>Total:</strong>
+            <strong>${{ total_with_shipping|floatformat:2 }}</strong>
+          </div>
+        </div>
+        <a href="{% url 'cart_summary' %}" class="btn btn-secondary btn-block">Update Cart</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const shippingForm = document.getElementById('shippingForm');
+    const pickupForm = document.getElementById('pickupForm');
+    const shippingInfoForm = document.getElementById('shippingInfoForm');
+
+    if (shippingForm) {
+      const radios = shippingForm.querySelectorAll('input[type="radio"]');
+      radios.forEach(radio => {
+        radio.addEventListener('change', () => {
+          shippingForm.submit();
+        });
+      });
+    }
+
+    if (pickupForm) {
+      pickupForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (this.checkValidity()) {
+          this.submit();
+        } else {
+          alert('Please fill out all required fields.');
+        }
+      });
+    }
+
+    if (shippingInfoForm) {
+      shippingInfoForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Add form validation logic here
+        this.submit();
+      });
+    }
+  });
+</script>
+{% endblock %}

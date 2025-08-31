@@ -1,0 +1,338 @@
+{% extends 'base.html' %}
+{% load custom_filter %}
+
+{% block content %}
+  <style>
+   /* Your existing styles */
+   :root {
+    --primary-pink: #FFC0CB;
+    --secondary-pink: #FFB6C1;
+    --dark-pink: #FF69B4;
+    --text-color: #333;
+    --white: #FFFFFF;
+  }
+
+  .boutique-header {
+    background: linear-gradient(135deg, var(--primary-pink), var(--secondary-pink));
+    padding: 4rem 0;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+
+  .boutique-card {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+  }
+
+  .boutique-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .boutique-btn {
+    background-color: var(--dark-pink);
+    border: none;
+    color: var(--white);
+    transition: all 0.3s ease;
+  }
+
+  .boutique-btn:hover {
+    background-color: var(--secondary-pink);
+    color: var(--text-color);
+  }
+
+  .order-summary {
+    background-color: var(--primary-pink);
+    border-radius: 15px;
+    padding: 2rem;
+  }
+
+  .order-summary-table {
+    background-color: var(--white);
+    border-radius: 10px;
+  }
+
+  .product-image {
+    object-fit: cover;
+    height: 150px;
+    border-radius: 10px;
+  }
+
+  .promo-message {
+    margin-top: 1rem;
+    padding: 0.75rem 1.25rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+  }
+
+  .promo-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+  }
+
+  .promo-error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+  }
+  :root {
+    --primary-pink: #FFC0CB;
+    --secondary-pink: #FFB6C1;
+    --dark-pink: #FF69B4;
+    --text-color: #333;
+    --white: #FFFFFF;
+  }
+
+  .boutique-header {
+    background: linear-gradient(135deg, var(--primary-pink), var(--secondary-pink));
+    padding: 4rem 0;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+
+  .boutique-card {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+  }
+
+  .boutique-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .boutique-btn {
+    background-color: var(--dark-pink);
+    border: none;
+    color: var(--white);
+    transition: all 0.3s ease;
+  }
+
+  .boutique-btn:hover {
+    background-color: var(--secondary-pink);
+    color: var(--text-color);
+  }
+
+  .order-summary {
+    background-color: var(--primary-pink);
+    border-radius: 15px;
+    padding: 2rem;
+  }
+
+  .order-summary-table {
+    background-color: var(--white);
+    border-radius: 10px;
+  }
+
+  .product-image {
+    object-fit: cover;
+    height: 150px;
+    border-radius: 10px;
+  }
+</style>
+
+  <!-- Header -->
+  <header class="boutique-header">
+    <div class="container px-4 px-lg-5 my-5">
+      <div class="text-center text-white">
+        <h1 class="display-4 fw-bolder">Your Shopping Cart</h1>
+        <p class="lead fw-normal text-white-50 mb-0">Curated elegance awaits you</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="container mt-5">
+    <div class="row">
+      <!-- Product List -->
+      <div class="col-12 col-lg-8 mb-4">
+        {% if cart_products %}
+          {% for variant in variants %}
+            <div class="card boutique-card mb-4">
+              <div class="row g-0">
+                <div class="col-4 col-md-3">
+                  {% if variant.product.image %}
+                    <img src="{{ variant.product.image.url }}" alt="{{ variant.product.name }}" class="img-fluid product-image" />
+                  {% else %}
+                    <img src="https://via.placeholder.com/200x200.png?text=No+Image" alt="No Image Available" class="img-fluid product-image" />
+                  {% endif %}
+                </div>
+                <div class="col-8 col-md-9">
+                  <div class="card-body">
+                    <h5 class="card-title">{{ variant.product }}</h5>
+                    <p class="card-text d-none d-md-block">{{ variant.product.description|truncatewords:20 }}</p>
+                    {% if variant.product.is_sale %}
+                      <div class="text-danger mb-2">
+                        <i class="fas fa-tag"></i> Sale
+                      </div>
+                      <p class="card-text">
+                        <strike class="text-muted">${{ variant.product.price }}</strike>
+                        <span class="text-danger fw-bold">${{ variant.product.sale_price }}</span>
+                      </p>
+                    {% else %}
+                      <p class="card-text fw-bold">${{ variant.product.price }}</p>
+                    {% endif %}
+                    <div class="d-flex flex-wrap align-items-center mt-3">
+                      <div class="me-3 mb-2">
+                        <label for="size{{ variant.id }}" class="form-label">Size:</label>
+                        <select class="form-select form-select-sm" id="size{{ variant.id }}">
+                          <option selected>{{ variant.size }}</option>
+                        </select>
+                      </div>
+                      <div class="me-3 mb-2">
+                        <label for="quantity{{ variant.id }}" class="form-label">Quantity:</label>
+                        <select class="form-select form-select-sm" id="quantity{{ variant.id }}">
+                          {% for key, value in quantities.items %}
+                            {% if key == variant.id|slugify %}
+                              {% for key, val in value.items %}
+                                <option selected>{{ key }}</option>
+                              {% endfor %}
+                            {% endif %}
+                          {% endfor %}
+                          {% for qty in variant.stock_qty|range %}
+                            <option value="{{ qty }}">{{ qty }}</option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                    </div>
+                    <div class="mt-3">
+                      <button type="button" data-index="{{ variant.id }}" class="btn boutique-btn btn-sm me-2 mb-2 update-cart"><i class="fas fa-sync-alt me-1"></i> Update</button>
+                      <button type="button" data-index="{{ variant.id }}" class="btn btn-outline-danger btn-sm mb-2 delete-product"><i class="fas fa-trash-alt me-1"></i> Remove</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="text-center py-5">
+            <i class="fas fa-shopping-cart fa-4x mb-3 text-muted"></i>
+            <p class="lead">Your cart is empty...</p>
+            <a href="{% url 'all_product' %}" class="btn boutique-btn mt-3"><i class="fas fa-store me-2"></i>Continue Shopping</a>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Order Summary -->
+      <div class="col-12 col-lg-4">
+        <div class="order-summary">
+          <h3 class="text-center mb-4">Order Summary</h3>
+
+          <!-- Promo Code Section -->
+          <form method="post" class="mb-4">
+            {% csrf_token %}
+            <div class="input-group">
+              {{ promo_code_form.code }}
+              <button class="btn boutique-btn" type="submit">Apply</button>
+            </div>
+          </form>
+
+
+          <!-- Display Applied Promo Code -->
+          {% if applied_promo_code %}
+            <div class="mt-2">
+              <strong>Applied Promo Code:</strong> {{ applied_promo_code }}
+              <form method="post" action="{% url 'remove_promo_code' %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-danger ms-2">Remove</button>
+              </form>
+            </div>
+          {% endif %}
+
+          <div class="order-summary-table p-3 mb-4">
+            <table class="table table-borderless">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th class="text-center">Qty</th>
+                  <th class="text-end">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for variant in variants %}
+                  <tr>
+                    <td>{{ variant }}</td>
+                    {% for key, value in quantities.items %}
+                      {% if key == variant.id|slugify %}
+                        {% for key, val in value.items %}
+                          <td class="text-center">{{ key }}</td>
+                        {% endfor %}
+                      {% endif %}
+                    {% endfor %}
+                    <td class="text-end">
+                      {% if variant.product.is_sale %}
+                        <span class="text-danger">${{ variant.product.sale_price|floatformat:2 }}</span>
+                      {% else %}
+                        ${{ variant.product.price|floatformat:2 }}
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <span class="fw-bold">Subtotal:</span>
+            <span class="fw-bold fs-4">${{ totals|floatformat:2 }}</span>
+          </div>
+          {% if discount > 0 %}
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <span class="fw-bold">Discount:</span>
+              <span class="fw-bold fs-4">-${{ discount|floatformat:2 }}</span>
+            </div>
+          {% endif %}
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <span class="fw-bold">Total:</span>
+            <span class="fw-bold fs-4">${{ final_total|floatformat:2 }}</span>
+          </div>
+          <a href="{% url 'checkout' %}" class="btn boutique-btn w-100 py-2"><i class="fas fa-lock me-2"></i>Secure Checkout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  $(document).on('click', '.update-cart', function(e) {
+    e.preventDefault();
+    var productid = $(this).data('index');
+    var quantity = $('#quantity' + productid + ' option:selected').val();
+    var size = $('#size' + productid).val();
+
+    $.ajax({
+      type: 'POST',
+      url: '{% url "cart_update" %}',
+      data: {
+        'product_id': productid,
+        'product_qty': quantity,
+        'size': size,
+        'csrfmiddlewaretoken': '{{ csrf_token }}',
+        'action': 'post'
+      },
+      success: function(response) {
+        location.reload();
+      },
+      error: function(xhr, errmsg, err) {
+        console.error('Error:', errmsg);
+      }
+    });
+  });
+
+  $(document).on('click', '.delete-product', function(e) {
+    e.preventDefault();
+    var productid = $(this).data('index');
+    $.ajax({
+      type: 'POST',
+      url: '{% url "cart_delete" %}',
+      data: {
+        'product_id': productid,
+        'csrfmiddlewaretoken': '{{ csrf_token }}',
+        'action': 'post'
+      },
+      success: function(response) {
+        location.reload();
+      },
+      error: function(xhr, errmsg, err) {
+        console.error('Error:', errmsg);
+      }
+    });
+  });
+</script>
+  <br />
+{% endblock %}

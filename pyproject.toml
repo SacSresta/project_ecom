@@ -1,0 +1,40 @@
+[project]
+name = "basanaboutique"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "asgiref>=3.8.1",
+    "azure-core>=1.30.2",
+    "azure-storage-blob>=12.22.0",
+    "certifi>=2024.7.4",
+    "cffi>=1.17.0",
+    "charset-normalizer>=3.3.2",
+    "cryptography>=42.0.5",
+    "django>=5.2.1",
+    "django-paypal>=2.1.1",
+    "django-phonenumber-field[phonenumbers]>=8.1.0",
+    "django-storages>=1.14.4",
+    "git-filter-repo>=2.45.0",
+    "gunicorn>=21.2.0",
+    "idna>=3.7",
+    "isodate>=0.6.1",
+    "mysqlclient>=2.2.4",
+    "packaging>=24.1",
+    "pillow>=10.4.0",
+    "psycopg2>=2.9.9",
+    "psycopg2-binary>=2.9.9",
+    "pycparser>=2.22",
+    "python-dotenv>=1.0.1",
+    "pytz>=2024.1",
+    "requests>=2.31.0",
+    "setuptools>=80.9.0",
+    "six>=1.16.0",
+    "sqlparse>=0.5.1",
+    "stripe>=10.8.0",
+    "typing-extensions>=4.12.2",
+    "tzdata>=2024.1",
+    "urllib3>=2.2.1",
+    "whitenoise>=6.7.0",
+]

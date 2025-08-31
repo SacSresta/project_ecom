@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .order-card {
+        max-width: 800px;
+        margin: 2rem auto;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    .order-header {
+        background: linear-gradient(135deg, #4a90e2, #50e3c2);
+        color: white;
+        padding: 1.5rem;
+    }
+    .order-body {
+        padding: 2rem;
+    }
+    .order-info {
+        margin-bottom: 1.5rem;
+    }
+    .order-items {
+        border-top: 1px solid #e0e0e0;
+        padding-top: 1.5rem;
+    }
+    .item-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+    .shipping-address {
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        padding: 1rem;
+        white-space: pre-wrap;
+    }
+    .btn-ship, .btn-unship {
+        width: 100%;
+        padding: 0.75rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    .btn-ship:hover, .btn-unship:hover {
+        transform: translateY(-2px);
+    }
+</style>
+
+<div class="container px-4 px-lg-5 my-5">
+    <div class="order-card">
+        <div class="order-header">
+            <h2 class="mb-0">{{order}}</h2>
+            <p class="mb-0">Total: ${{ order.amount_paid }}</p>
+        </div>
+        <div class="order-body">
+            <div class="order-info">
+                <p><strong>Email:</strong> {{ order.email }}</p>
+                <p>
+                    <strong>
+                        {% if order.date_shipped %}
+                            Date Shipped:
+                        {% else %}
+                            Date Ordered:
+                        {% endif %}
+                    </strong>
+                    {{ order.date_shipped|default:order.date_ordered }}
+                </p>
+                <p><strong>Full Name:</strong> {{ order.full_name }}</p>
+                <p><strong>Shipping Address:</strong></p>
+                <div class="shipping-address">{{ order.shipping_address }}</div>
+            </div>
+            
+            <div class="order-items">
+                <h3 class="mb-3">Order Items</h3>
+                {% for item in items %}
+                    <div class="item-row">
+                        <span>{{ item.variant }}</span>
+                        <span>{{ item.quantity }} x ${{ item.price }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="mt-4">
+                {% if not order.shipped %}
+                    <form method="POST" id="shipForm">
+                        {% csrf_token %}
+                        <input type="hidden" name="shipping_status" value="true" />
+                        <button type="submit" class="btn btn-success btn-ship">Mark as Shipped</button>
+                    </form>
+                {% else %}
+                    <form method="POST" id="unshipForm">
+                        {% csrf_token %}
+                        <input type="hidden" name="shipping_status" value="false" />
+                        <button type="submit" class="btn btn-danger btn-unship">Mark as Not Shipped</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const shipForm = document.getElementById('shipForm');
+    const unshipForm = document.getElementById('unshipForm');
+
+    if (shipForm) {
+        shipForm.addEventListener('submit', function(e) {
+            if (!confirm('Are you sure you want to mark this order as shipped?')) {
+                e.preventDefault();
+            }
+        });
+    }
+
+    if (unshipForm) {
+        unshipForm.addEventListener('submit', function(e) {
+            if (!confirm('Are you sure you want to mark this order as not shipped?')) {
+                e.preventDefault();
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

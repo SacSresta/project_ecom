@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+    <style>
+        .contact-container {
+            padding: 40px 20px;
+            background-color: #f8f9fa;
+        }
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            transition: transform 0.3s ease;
+        }
+        .contact-form:hover {
+            transform: translateY(-5px);
+        }
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        .btn-submit {
+            background-color: #007bff;
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-submit:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .form-floating {
+            position: relative;
+        }
+        .form-floating label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            padding: 1rem 0.75rem;
+            pointer-events: none;
+            border: 1px solid transparent;
+            transform-origin: 0 0;
+            transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
+        }
+        .form-floating .form-control:focus ~ label,
+        .form-floating .form-control:not(:placeholder-shown) ~ label {
+            opacity: 0.65;
+            transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+        }
+        .form-title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="contact-container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <form action="{% url 'contact' %}" method="POST" class="contact-form" id="contactForm" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <h2 class="form-title">Get in Touch</h2>
+                    
+                    <div class="mb-3 form-floating">
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Your Name" value="{{ form.name.value }}" required>
+                        <label for="name">Name</label>
+                    </div>
+                
+                    <div class="mb-3 form-floating">
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Your Email" value="{{ form.email.value }}" required>
+                        <label for="email">Email</label>
+                    </div>
+                
+                    <div class="mb-3 form-floating">
+                        <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject" value="{{ form.subject.value }}" required>
+                        <label for="subject">Subject</label>
+                    </div>
+                
+                    <!-- Product field -->
+                    <div class="mb-3 form-floating">
+                        <input type="text" class="form-control" id="product" name="product" placeholder="Product Name" value="{{ form.product.value }}" required>
+                        <label for="product">Product Name</label>
+                    </div>
+                
+                    <div class="mb-3 form-floating">
+                        <textarea class="form-control" id="message" name="enquiry" rows="5" placeholder="Your Message" required style="height: 100px;"></textarea>
+                        <label for="message">Message</label>
+                    </div>
+                
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Upload Image (Optional)</label>
+                        <input type="file" class="form-control" id="image" name="image">
+                    </div>
+                
+                    <div class="text-center">
+                        <button type="submit" class="btn-submit">Send Message</button>
+                    </div>
+                </form>                
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('contactForm');
+            const inputs = form.querySelectorAll('input, textarea');
+
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentNode.classList.add('focused');
+                });
+
+                input.addEventListener('blur', function() {
+                    if (this.value === '') {
+                        this.parentNode.classList.remove('focused');
+                    }
+                });
+            });
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Add loading state to button
+                const submitBtn = form.querySelector('.btn-submit');
+                submitBtn.innerHTML = 'Sending...';
+                submitBtn.disabled = true;
+
+                // Simulate form submission (replace with actual AJAX call)
+                setTimeout(() => {
+                    alert('Message sent successfully!');
+                    form.reset();
+                    submitBtn.innerHTML = 'Send Message';
+                    submitBtn.disabled = false;
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

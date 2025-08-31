@@ -1,0 +1,130 @@
+{% load static %}
+
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid px-3">
+    <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+      <span class="fs-4 fw-bold text-primary">Basana</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">
+            <i class="bi bi-house-door me-1"></i>Home
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.url_name == 'search' %}active{% endif %}" href="{% url 'search' %}">
+            <i class="bi bi-search me-1"></i>Search
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'about' %}">
+            <i class="bi bi-info-circle me-1"></i>About
+          </a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownCategories" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-grid me-1"></i>Categories
+          </a>
+          <ul class="dropdown-menu shadow" aria-labelledby="navbarDropdownCategories">
+            <li><a class="dropdown-item" href="{% url 'all_product' %}"><i class="bi bi-bag me-2"></i>Our Products</a></li>
+            <li><a class="dropdown-item" href="{% url 'category_summary' %}"><i class="bi bi-list-ul me-2"></i>Our Categories</a></li>
+            <li><hr class="dropdown-divider"></li>
+            {% for category in categories %}
+              <li><a class="dropdown-item" href="{% url 'category' category.name %}"><i class="bi bi-tag me-2"></i>{{ category.name|title }}</a></li>
+            {% endfor %}
+          </ul>
+        </li>
+      </ul>
+
+      <div class="d-flex align-items-center">
+        <ul class="navbar-nav">
+          {% if user.is_authenticated %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownProfile" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-person-circle me-1"></i>{{ user.username }}
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="navbarDropdownProfile">
+                <li><a class="dropdown-item" href="{% url 'update_user' %}">
+                  <i class="bi bi-person-lines-fill me-2"></i>User Profile
+                </a></li>
+                <li><a class="dropdown-item" href="{% url 'update_info' %}">
+                  <i class="bi bi-info-circle me-2"></i>User Info
+                </a></li>
+                {% if user.is_superuser %}
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="{% url 'admin:index' %}">
+                    <i class="bi bi-gear me-2"></i>Admin Panel
+                  </a></li>
+                  <li><a class="dropdown-item" href="{% url 'shipped_dash' %}">
+                    <i class="bi bi-truck me-2"></i>Shipped Orders
+                  </a></li>
+                  <li><a class="dropdown-item" href="{% url 'not_shipped_dash' %}">
+                    <i class="bi bi-box-seam me-2"></i>Unshipped Orders
+                  </a></li>
+                {% endif %}
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'logout' %}">
+                  <i class="bi bi-box-arrow-right me-2"></i>Logout
+                </a></li>
+              </ul>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'login' %}">
+                <i class="bi bi-box-arrow-in-right me-1"></i>Login
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'register' %}">
+                <i class="bi bi-person-plus me-1"></i>Register
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+</nav>
+<div>
+    <a href="{% url 'cart_summary' %}" class="nav-link position-relative me-3">
+        <i class="bi bi-cart fs-5"></i>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary" id="cart_quantity">
+          {{ cart|length }}
+          <span class="visually-hidden">items in cart</span>
+        </span>
+      </a>
+  </div>
+
+<style>
+  @media (max-width: 991px) {
+    .navbar-nav .dropdown-menu {
+      border: none;
+      padding-left: 1.5rem;
+      background-color: transparent;
+      box-shadow: none;
+    }
+    .navbar-nav .dropdown-item {
+      color: rgba(0,0,0,.55);
+    }
+    .navbar-nav .dropdown-item:hover,
+    .navbar-nav .dropdown-item:focus {
+      background-color: transparent;
+      color: rgba(0,0,0,.7);
+    }
+  }
+</style>
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/custom.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basana Boutique - All Products</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FFF5F7;
+        }
+        .hero {
+            position: relative;
+            height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+            background-image: url('media/upload/product/all_products_hero.jpg');
+        }
+        .hero-content {
+            text-align: center;
+            color: #FFF;
+            z-index: 1;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .section {
+            padding: 4rem 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #FF69B4;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        .product-card {
+            background-color: #FFF;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(255, 105, 180, 0.2);
+        }
+        .product-image {
+            height: 250px;
+            overflow: hidden;
+        }
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
+        }
+        .product-info {
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .product-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        .product-price {
+            color: #FF69B4;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .product-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .sale-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: #FF69B4;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-weight: bold;
+            z-index: 1;
+            font-size: 0.9rem;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #FF69B4;
+            color: #FFF;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #FF1493;
+            transform: translateY(-3px);
+        }
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="hero-content" data-aos="fade-up">
+            <h1>All Products</h1>
+            <p>Explore our collection of trendy and traditional styles</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <h2 data-aos="fade-up">Our Products</h2>
+            <div class="product-grid">
+                {% for product in products %}
+                <div class="product-card" data-aos="fade-up">
+                    {% if product.is_sale %}
+                    <div class="sale-badge">Sale</div>
+                    {% endif %}
+                    <div class="product-image">
+                        {% if product.image %}
+                        <a href="{% url 'product' product.id %}">
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        </a>
+                        {% else %}
+                        <img src="https://via.placeholder.com/250x250.png?text=No+Image" alt="No Image Available">
+                        {% endif %}
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">{{ product.name }}</h3>
+                        <p class="product-description">{{ product.short_description|truncatechars:50 }}</p>
+                        {% if product.is_sale %}
+                        <p class="product-price">
+                            <span class="original-price">${{ product.price }}</span>
+                            <span class="sale-price">${{ product.sale_price }}</span>
+                        </p>
+                        {% else %}
+                        <p class="product-price">${{ product.price }}</p>
+                        {% endif %}
+                        <a href="{% url 'product' product.id %}" class="btn">View Details</a>
+                    </div>
+                </div>
+                {% empty %}
+                <p style="text-align: center; color: #666; font-size: 1.1rem; grid-column: 1 / -1;">No products available at the moment.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

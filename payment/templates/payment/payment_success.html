@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Success - Basana Boutique</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-2xl animate-fade-in">
+            <div>
+                <svg class="mx-auto h-12 w-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                    Payment Successful!
+                </h2>
+                <p class="mt-2 text-center text-sm text-gray-600">
+                    Thank you for your purchase. Your order is being prepared.
+                </p>
+            </div>
+            
+            <div class="text-center">
+                <a href="{% url 'home' %}" class="font-medium text-indigo-600 hover:text-indigo-500">
+                    Return to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

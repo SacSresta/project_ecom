@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Product</title>
+    <style>
+        .header-section {
+            background-color: #FFB6C1;
+            background-image: linear-gradient(135deg, #FFB6C1 0%, #FFC0CB 100%);
+            padding: 4rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header-content {
+            text-align: center;
+            color: #333;
+        }
+        .header-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .header-subtitle {
+            font-size: 1.25rem;
+            font-weight: 300;
+        }
+        .search-card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .search-card-header {
+            background-color: #FF69B4;
+            color: white;
+            padding: 1rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        .search-input {
+            border-radius: 25px;
+            padding: 0.75rem 1.25rem;
+            border: 2px solid #FF69B4;
+            transition: all 0.3s ease;
+        }
+        .search-input:focus {
+            box-shadow: 0 0 0 0.2rem rgba(255, 105, 180, 0.25);
+            border-color: #FF1493;
+        }
+        .btn-pink {
+            background-color: #FF69B4;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-pink:hover {
+            background-color: #FF1493;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .product-card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .product-image {
+            height: 200px;
+            object-fit: cover;
+        }
+        .sale-badge {
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #FF1493;
+            color: white;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 15px;
+        }
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .product-price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #FF1493;
+        }
+        .product-description {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+        .btn-view-product {
+            background-color: #FF69B4;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-view-product:hover {
+            background-color: #FF1493;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header-section">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="header-title">Search Product</h1>
+                <p class="header-subtitle">Find What You Are Looking For</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Search Form -->
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="search-card">
+                    <div class="search-card-header">
+                        Search Product
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{% url 'search' %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <input type="text" class="form-control search-input" placeholder="Search for Products" name="searched">
+                            </div>
+                            <button type="submit" class="btn btn-pink">Search Products</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Results -->
+        <div class="row g-4 mt-5">
+            {% if searched %}
+                {% for product in searched %}
+                    <div class="col-sm-6 col-md-4 col-lg-3">
+                        <div class="product-card">
+                            {% if product.is_sale %}
+                                <div class="badge position-absolute sale-badge">
+                                    Sale
+                                </div>
+                            {% endif %}
+                            <img class="card-img-top product-image" src="{{ product.image.url }}" alt="{{ product.name }}" />
+                            <div class="card-body">
+                                <h5 class="product-name">{{ product.name }}</h5>
+                                {% if product.is_sale %}
+                                    <div class="product-price">
+                                        <strike>${{ product.price }}</strike>&nbsp;
+                                        ${{ product.sale_price }}
+                                    </div>
+                                {% else %}
+                                    <div class="product-price">${{ product.price }}</div>
+                                {% endif %}
+                                <p class="product-description">{{ product.description|truncatechars:100 }}</p>
+                                <a class="btn btn-view-product" href="{% url 'product' product.id %}">View Product</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-center mt-5">No products found.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}

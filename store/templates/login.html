@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        .login-header {
+            background-color: #FFB6C1;
+            background-image: linear-gradient(135deg, #FFB6C1 0%, #FFC0CB 100%);
+            padding: 4rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .login-title {
+            color: #333;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .login-subtitle {
+            color: #555;
+            font-size: 1.2rem;
+        }
+        .login-container {
+            max-width: 400px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .form-control {
+            border: 2px solid #FFB6C1;
+            border-radius: 25px;
+            padding: 0.75rem 1.25rem;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(255, 182, 193, 0.25);
+            border-color: #FF69B4;
+        }
+        .btn-pink {
+            background-color: #FFB6C1;
+            color: #333;
+            border: none;
+            border-radius: 25px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-pink:hover {
+            background-color: #FF69B4;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .register-link {
+            color: #FF69B4;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .register-link:hover {
+            color: #FF1493;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="login-header">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center">
+                <h1 class="login-title">Welcome Back</h1>
+                <p class="login-subtitle">Please login to your account</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="login-container">
+            <form method="POST" action="{% url 'login' %}" id="loginForm">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <input type="text" class="form-control" name="username" placeholder="Username" required>
+                </div>
+                <div class="mb-4">
+                    <input type="password" class="form-control" name="password" placeholder="Password" required>
+                </div>
+                <div class="d-grid gap-2 mb-4">
+                    <button type="submit" class="btn btn-pink">Login</button>
+                </div>
+            </form>
+            <p class="text-center">Don't have an account? <a href="{% url 'register' %}" class="register-link">Create Your Account Here</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('loginForm');
+            const inputs = form.querySelectorAll('input');
+
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.style.transform = 'scale(1.05)';
+                });
+
+                input.addEventListener('blur', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Add loading state to button
+                const submitBtn = form.querySelector('.btn-pink');
+                submitBtn.innerHTML = 'Logging in...';
+                submitBtn.disabled = true;
+
+                // Simulate form submission (replace with actual form submission)
+                setTimeout(() => {
+                    form.submit();
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

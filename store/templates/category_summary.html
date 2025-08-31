@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basana Boutique - Categories</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FFF5F7;
+        }
+        .hero {
+            position: relative;
+            height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+            background-image: url('{% static "images/category_banner.jpg" %}');
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .hero-content {
+            text-align: center;
+            color: #FFF;
+            z-index: 1;
+        }
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .section {
+            padding: 4rem 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .category-card {
+            background-color: #FFF;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            cursor: pointer;
+            text-align: center; /* Center text */
+        }
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(255, 105, 180, 0.2);
+        }
+        .category-image {
+            height: 250px;
+            overflow: hidden;
+            position: relative; /* Add position relative */
+        }
+        .category-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .category-card:hover .category-image img {
+            transform: scale(1.1);
+        }
+        .category-info {
+            padding: 1.5rem;
+        }
+        .category-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: #FF69B4;
+            margin-bottom: 0.5rem;
+        }
+        .category-description {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #FF69B4;
+            color: #FFF;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #FF1493;
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="hero-content" data-aos="fade-up">
+            <h1>Explore Our Categories</h1>
+            <p>Discover a world of style and elegance</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <h2 data-aos="fade-up">Shop by Category</h2>
+            <div class="category-grid">
+                {% for category in categories %}
+                <div class="category-card" data-aos="fade-up">
+                    <div class="category-image">
+                        {% if category.image %}
+                            <img src="{{ category.image.url }}" alt="{{ category.name }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/400x300.png?text=No+Image" alt="No Image Available">
+                        {% endif %}
+                    </div>
+                    <div class="category-info">
+                        <h3 class="category-title">{{ category.name }}</h3>
+                        <p class="category-description">Explore our collection of {{ category.name|lower }} products.</p>
+                        <a href="{% url 'category' category.name %}" class="btn">View {{ category.name }}</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

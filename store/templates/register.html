@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        :root {
+            --primary-color: #FF69B4;
+            --secondary-color: #FFB6C1;
+            --text-color: #333;
+            --bg-color: #f8f9fa;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        
+        .register-header {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            padding: 4rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .register-title {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .register-subtitle {
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .register-form-container {
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-control {
+            border: 2px solid var(--secondary-color);
+            border-radius: 25px;
+            padding: 0.75rem 1.25rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(255, 105, 180, 0.25);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-register {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn-register:hover {
+            background-color: #FF1493;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .help-text {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="register-header">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center">
+                <h1 class="register-title">Join Our Community</h1>
+                <p class="register-subtitle">Create your account and get started</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Registration Form -->
+    <div class="container">
+        <div class="register-form-container">
+            <form method="POST" action="{% url 'register' %}" id="registerForm">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <small class="help-text">{{ field.help_text }}</small>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <small class="text-danger">{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-register">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('registerForm');
+            const inputs = form.querySelectorAll('input');
+
+            inputs.forEach(input => {
+                input.classList.add('form-control');
+                
+                input.addEventListener('focus', function() {
+                    this.style.transform = 'scale(1.02)';
+                });
+
+                input.addEventListener('blur', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const submitBtn = form.querySelector('.btn-register');
+                submitBtn.innerHTML = 'Creating Account...';
+                submitBtn.disabled = true;
+
+                // Simulate form submission (replace with actual form submission)
+                setTimeout(() => {
+                    form.submit();
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

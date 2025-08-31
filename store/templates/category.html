@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ category }} Products</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+            padding: 30px 0;
+        }
+        .product-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        .sale-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #FF4081;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            z-index: 1;
+        }
+        .product-image-container {
+            height: 250px;
+            overflow: hidden;
+            position: relative;
+        }
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .product-image:hover {
+            transform: scale(1.05);
+        }
+        .product-details {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        .product-price {
+            color: #2ecc71;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .sale-price {
+            color: #FF4081;
+        }
+        .original-price {
+            color: #95a5a6;
+            font-size: 0.9rem;
+            text-decoration: line-through;
+            margin-right: 5px;
+        }
+        .product-description {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+        .view-product-btn {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+        .view-product-btn:hover {
+            background-color: #2980b9;
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+        }
+        header {
+            background-color: #34495e;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        .header-description {
+            font-size: 1.1rem;
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 20px;
+            }
+            .product-image-container {
+                height: 200px;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .header-description {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <h1>{{ category }}</h1>
+            <p class="header-description">Discover our curated selection of premium products</p>
+        </div>
+    </header>
+
+    <!-- Product Section -->
+    <section>
+        <div class="container">
+            <div class="product-grid">
+                {% for product in products %}
+                <div class="product-card">
+                    {% if product.is_sale %}
+                        <div class="sale-badge">Sale</div>
+                    {% endif %}
+                    <!-- Product image -->
+                    <div class="product-image-container">
+                        {% if product.image %}
+                            <a href="{% url 'product' product.id %}">
+                                <img class="product-image" src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy" />
+                            </a>
+                        {% else %}
+                            <img class="product-image" src="https://via.placeholder.com/250x250.png?text=No+Image" alt="No Image Available" loading="lazy" />
+                        {% endif %}
+                    </div>
+
+                    <!-- Product details -->
+                    <div class="product-details">
+                        <h2 class="product-name">{{ product.name }}</h2>
+                        {% if product.is_sale %}
+                            <div class="product-price">
+                                <span class="original-price">${{ product.price }}</span>
+                                <span class="sale-price">${{ product.sale_price }}</span>
+                            </div>
+                        {% else %}
+                            <div class="product-price">${{ product.price }}</div>
+                        {% endif %}
+                        <p class="product-description">{{ product.short_description }}</p>
+                        <a href="{% url 'product' product.id %}" class="view-product-btn">View Details</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const productCards = document.querySelectorAll('.product-card');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            productCards.forEach(card => {
+                card.style.opacity = 0;
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock %}
