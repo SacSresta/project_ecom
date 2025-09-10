@@ -31,7 +31,7 @@ A modern e-commerce platform built with Django, featuring a robust shopping cart
 ## 🚀 Technology Stack
 
 - **Backend**: Django 5.2.1
-- **Database**: SQLite3
+- **Database**: POSTGRESQL
 - **Payment Integration**: 
   - Stripe
   - PayPal
